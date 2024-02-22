@@ -1,39 +1,19 @@
-const messageList = document.querySelector("ul");
-const messageForm = document.querySelector("#messageForm");
-const nicknameForm = document.querySelector("#nicknameForm");
-const socket = new WebSocket(`ws://${window.location.host}`);
-const makeMessage = (type, payload) =>{
-  const msg = {type, payload};
-  return JSON.stringify(msg);
-}
-const pushChatLine = (message) =>{
-  const li = document.createElement("li");
-  li.innerText = message;
-  messageList.append(li);
-}
-socket.addEventListener("open", ()=>{
-  console.log("Connected to Serer.");
-})
-socket.addEventListener("message", (message)=>{
-  console.log("receive message : ", message);
-  pushChatLine(message.data);
-});
-socket.addEventListener("close", ()=>{
-  console.log("Disconnected from Server.");
-});
+const socket = io();        // 알아서 socket.io 를 실행하고 서버를 찾음.
 
-const handleMessageSubmit = (event)=>{
-  event.preventDefault();
-  const input = messageForm.querySelector("input");
-  socket.send(makeMessage("new_message", input.value));
-  pushChatLine(`You : ${input.value}`);
-  input.value = "";
+const myFace = document.getElementById("myFace");
+let myStream;
+const getMedia = async()=>{
+   try{
+    myStream = await navigator.mediaDevices.getUserMedia(
+      {
+        audio:true,
+        video:true
+      }
+    );
+    myFace.srcObject = myStream;
+    console.log("myStream : ", myStream);
+   }catch(e){
+    console.log("getMedia catch - ", e);
+   }
 };
-const handleNicknameSubmit = (event)=>{
-  event.preventDefault();
-  const input = nicknameForm.querySelector("input");
-  socket.send(makeMessage("nickname", input.value));
-};
-
-messageForm.addEventListener("submit", handleMessageSubmit);
-nicknameForm.addEventListener("submit", handleNicknameSubmit)
+getMedia();

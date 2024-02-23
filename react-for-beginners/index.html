@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const root = document.getElementById("root");
+    const Button = React.memo(({ text, onClick }) => {
+      console.log(text, " render.");
+      return <button onClick={onClick}>{text}</button>;
+    });
+    // const MemorizedButton = React.memo(Button);
+    const App = () => {
+      const [value, setValue] = React.useState("Save Changes");
+      const changeValue = () => {
+        setValue("Revert Changes");
+      };
+
+      return (
+        <div>
+          <Button text={value} onClick={changeValue} />
+          <Button text="Confirm" />
+        </div>
+      );
+    };
+    const render = () => {
+      ReactDOM.render(<App />, root);
+    };
+    render();
+  </script>
+</html>
